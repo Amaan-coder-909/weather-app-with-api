@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weather App</title>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
+
+    body {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        /* GIF BACKGROUND PLACEHOLDER */
+        background: url('https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbjRyY2xhcmk5dDlzY2lpaDVhd25rNGU1cGRjM2Y4NjJ0NGRtY3lvMyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/evVKsrjZEqVVWvE2VR/giphy.gif') no-repeat center center/cover;
+    }
+
+    /* MOBILE CONTAINER */
+    .container {
+        width: 320px;
+        background: rgba(0,0,0,0.7);
+        padding: 20px;
+        border-radius: 20px;
+        text-align: center;
+        color: white;
+        backdrop-filter: blur(10px);
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 10px;
+        border: none;
+        outline: none;
+        margin-bottom: 10px;
+        font-size: 16px;
+    }
+
+    button {
+        width: 100%;
+        padding: 10px;
+        border-radius: 10px;
+        border: none;
+        background: #00c6ff;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .weather {
+        margin-top: 20px;
+    }
+
+    .weather h2 {
+        font-size: 22px;
+    }
+
+    .temp {
+        font-size: 40px;
+        margin: 10px 0;
+    }
+
+    .details {
+        font-size: 14px;
+        opacity: 0.8;
+    }
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+    <input type="text" id="city" placeholder="Enter Indian city...">
+    <button onclick="getWeather()">Search</button>
+
+    <div class="weather" id="weatherData">
+        <h2>City Name</h2>
+        <div class="temp">--°C</div>
+        <div class="details">Weather info will appear here</div>
+    </div>
+</div>
+
+<script>
+    const apiKey = "b3aa937c4d4fbe9ab8f23fbbc0b9c35d"; // API key here
+
+    async function getWeather() {
+        const city = document.getElementById("city").value;
+
+        if (!city) {
+            alert("Enter city name");
+            return;
+        }
+
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${city},IN&appid=${apiKey}&units=metric`;
+
+        try {
+            const res = await fetch(url);
+            const data = await res.json();
+
+            if (data.cod !== 200) {
+                alert("City not found");
+                return;
+            }
+
+            document.getElementById("weatherData").innerHTML = `
+                <h2>${data.name}</h2>
+                <div class="temp">${data.main.temp}°C</div>
+                <div class="details">
+                    ${data.weather[0].main} <br>
+                    Humidity: ${data.main.humidity}% <br>
+                    Wind: ${data.wind.speed} km/h
+                </div>
+            `;
+
+        } catch (error) {
+            alert("Error fetching data");
+        }
+    }
+</script>
+
+</body>
+</html>
